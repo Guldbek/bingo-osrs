@@ -37,11 +37,11 @@ public class JsonRequestBuilder {
                 MediaType.parse("application/json"), build());
 
         Request request = new Request.Builder()
-                .url("http://localhost:3001/playereventitems")
+                .url("http://localhost:3000/api/users_event_items")
+                .header("x-api-version", "v1")
                 .post(body)
                 .build();
 
-        Response response = client.newCall(request).execute();
-        System.out.println(response.body().string());
+        client.newCall(request).execute();
     }
 }
