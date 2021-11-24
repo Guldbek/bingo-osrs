@@ -5,12 +5,13 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.client.events.NpcLootReceived;
-import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemStack;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+
+import java.io.IOException;
 import java.util.Collection;
 
 @Slf4j
@@ -46,19 +47,11 @@ public class BingoHelperPlugin extends Plugin
 		final String name = npc.getName();
 
 		JsonRequestBuilder jsonRequestBuilder = new JsonRequestBuilder(player.getName(), npc.getName(), items);
-		String request = jsonRequestBuilder.build();
 
-		log.info(request);
-
-		client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Loot from " + name + "Killed by " + player.getName(), null);
-	}
-
-	@Subscribe
-	public void onGameStateChanged(GameStateChanged gameStateChanged)
-	{
-		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
-		{
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Example says " + config.greeting(), null);
+		try{
+			jsonRequestBuilder.send();
+		}catch (Exception e) {
+			log.info("Something went wrong with the request to the web app" + e);
 		}
 	}
 
